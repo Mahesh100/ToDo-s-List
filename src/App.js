@@ -1,7 +1,46 @@
 import logo from './logo.svg';
 import './App.css';
+import Header from './MyComponents/Header';
+import Footer from './MyComponents/Footer';
+import TodosItem from './MyComponents/TodoItem';
+import {Todos} from './MyComponents/Todos';
+import React, {useState} from 'react';
 
 function App() {
+
+  const onDelete = (todo)=>{
+    console.log("I am onDelete of todo", todo);
+    //  let index = todos.indexOf(todo);
+    //  todos.splice(index,1);
+
+    setTodos (todos.filter((e)=>{
+      return e!==todo;
+    }));
+  }
+    
+
+  const [todos, setTodos] = useState ([
+
+    {
+      sno:1,
+      title:"Got to Mall",
+      desc: "Need to go to market to get this job done"
+
+    },
+    {
+      sno:2,
+      title: "Go to Market",
+      desc: "Need to buy cookies"
+
+    },
+
+    {
+      sno:3,
+      title: "Go to Garage",
+      desc : "Repair bike"
+    }
+  ]);
+
   return (
     //it is jsx
     // <div classNameNameName="App">  
@@ -23,29 +62,11 @@ function App() {
     //   </header>
     // </div>
     <>
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-  <a className="navbar-brand" href="#">Todos List</a>
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
 
-  <div className="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul className="navbar-nav mr-auto">
-      <li className="nav-item active">
-        <a className="nav-link" href="#"> Home <span className="sr-only">(current)</span></a>
-      </li>
-
-      <li className="nav-item">
-        <a className="nav-link" href="#">About</a>
-      </li>
-     
-    </ul>
-    <form classNameName="form-inline my-2 my-lg-0">
-      <input classNameName="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-      <button classNameName="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-</nav>
+   
+     <Header title = "My Todos List" searchBar = {true}/>
+     <Todos todos={todos} onDelete = {onDelete}/>
+     <Footer/>
     </>
   );
 }
