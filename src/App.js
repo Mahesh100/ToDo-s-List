@@ -2,71 +2,77 @@ import logo from './logo.svg';
 import './App.css';
 import Header from './MyComponents/Header';
 import Footer from './MyComponents/Footer';
-import TodosItem from './MyComponents/TodoItem';
-import {Todos} from './MyComponents/Todos';
-import React, {useState} from 'react';
+import { Todos } from './MyComponents/Todos';
+import React, { useState, useEffect } from 'react';
+import { AddTodo } from './MyComponents/AddTodo';
+import { About } from './MyComponents/About';
+//import { Routes ,Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,Switch,
+  Route
+} from "react-router-dom";
 
 function App() {
-
-  const onDelete = (todo)=>{
-    console.log("I am onDelete of todo", todo);
-    //  let index = todos.indexOf(todo);
-    //  todos.splice(index,1);
-
-    setTodos (todos.filter((e)=>{
-      return e!==todo;
-    }));
+  let initTodo;
+  if (localStorage.getItem("todos") === null) {
+    initTodo = [];
   }
-    
+  else {
+    initTodo = JSON.parse(localStorage.getItem("todos"));
+  }
 
-  const [todos, setTodos] = useState ([
+  const onDelete = (todo) => {
+    console.log("I am ondelete of todo", todo);
+    setTodos(todos.filter((e) => {
+      return e !== todo;
+    }));
+    console.log("deleted", todos)
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }
 
-    {
-      sno:1,
-      title:"Got to Mall",
-      desc: "Need to go to market to get this job done"
-
-    },
-    {
-      sno:2,
-      title: "Go to Market",
-      desc: "Need to buy cookies"
-
-    },
-
-    {
-      sno:3,
-      title: "Go to Garage",
-      desc : "Repair bike"
+  const addTodo = (title, desc) => {
+    console.log("I am adding this todo", title, desc)
+    let sno;
+    if (todos.length === 0) {
+      sno = 0;
     }
-  ]);
+    else {
+      sno = todos[todos.length - 1].sno + 1;
+    }
+    const myTodo = {
+      sno: sno,
+      title: title,
+      desc: desc,
+    }
+    setTodos([...todos, myTodo]);
+    console.log(myTodo);
+  }
+
+  const [todos, setTodos] = useState(initTodo);
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos])
 
   return (
-    //it is jsx
-    // <div classNameNameName="App">  
-    
-    //   <header classNameName="App-header">
-    //     <div>12+45</div>
-    //     <img src={logo} classNameName="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       classNameName="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
     <>
-
-   
-     <Header title = "My Todos List" searchBar = {true}/>
-     <Todos todos={todos} onDelete = {onDelete}/>
-     <Footer/>
+      <Router>
+        <Header title="My Todos List" searchBar={false} />
+        <Switch>
+          <Route exact path="/" render={() => {
+            return (
+              <>
+                <AddTodo addTodo={addTodo} />
+                <Todos todos={todos} onDelete={onDelete} />
+              </>
+            )
+          }}>
+          </Route>
+          <Route exact path="/about">
+            <About />
+          </Route>
+        </Switch>
+        <Footer />
+      </Router>
     </>
   );
 }
